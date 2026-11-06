@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken')
 const authMiddleware = (req, res, next) => {
     console.log("inside authentication middleware");
 
-    const token = req.headers['authorization'].split(' ')[1]
+    const token = req.headers['authorization']?.split(' ')[1]
     console.log(token);
 
     if (token) {
@@ -12,11 +12,10 @@ const authMiddleware = (req, res, next) => {
             const jwtResponse = jwt.verify(token, process.env.JWTSECRET)
             console.log(jwtResponse);
             req.payload = jwtResponse.userEmail
-            // console.log(email);
             next()
 
         }
-        catch (err) {
+        catch {
             res.status(401).json("Invalid Token ... please login")
         }
     }
@@ -24,6 +23,5 @@ const authMiddleware = (req, res, next) => {
         res.status(401).json("Authorization failed!.. Token is missing")
     }
 
-    // next()
 }
 module.exports = authMiddleware

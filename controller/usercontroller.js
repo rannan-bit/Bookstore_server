@@ -101,3 +101,33 @@ exports.userEditController = async (req, res) => {
 
 
 }
+
+//admin edit
+exports.adminEditController = async (req, res) => {
+    console.log("inside admin Edit");
+
+    console.log(req.body);
+    const { username, password } = req.body
+    const { id } = req.params
+    if (password != "") {
+        const encryptedPassword = await bcrypt.hash(password, 10)
+
+        const updateAdmin = await users.findByIdAndUpdate({ _id: id }, { username, password: encryptedPassword }, { new: true })
+        res.status(200).json(updateAdmin)
+    }
+    else {
+        const updateAdmin = await users.findByIdAndUpdate({ _id: id }, { username }, { new: true })
+        res.status(200).json(updateAdmin)
+    }
+
+
+
+    res.status(200).json("update request recieved")
+}
+//display users list
+exports.getAllUsersController = async (req, res) => {
+    console.log("inside getAllUsersController");
+    const userList = await users.find({ role: 'user' })
+    res.status(200).json(userList)
+
+}
